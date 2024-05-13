@@ -126,15 +126,15 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
     glEnableVertexAttribArray(sp->a("vertex")); //Enable sending data to the attribute vertex
     glVertexAttribPointer(sp->a("vertex"),4,GL_FLOAT,false,0,myCubeVertices); //Specify source of the data for the attribute vertex
 
-	glEnableVertexAttribArray(sp->a("texCoord0"));
-	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, myCubeTexCoords);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glUniform1i(sp->u("textureMap0"), 0);
+	//glEnableVertexAttribArray(sp->a("texCoord0"));
+	//glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, myCubeTexCoords);
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, tex);
+	//glUniform1i(sp->u("textureMap0"), 0);
 
     glDrawArrays(GL_TRIANGLES,0,myCubeVertexCount); //Draw the object
 
-	glDisableVertexAttribArray(sp->a("texCoord0"));
+	//glDisableVertexAttribArray(sp->a("texCoord0"));
 
     glDisableVertexAttribArray(sp->a("vertex")); //Disable sending data to the attribute vertex
 
