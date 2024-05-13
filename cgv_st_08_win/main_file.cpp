@@ -33,6 +33,27 @@ float speed_x=0; //angular speed in radians
 float speed_y=0; //angular speed in radians
 float aspectRatio=1;
 ShaderProgram *sp; //Pointer to the shader program
+
+GLuint tex; //texture handle
+GLuint readTexture(const char* filename) {
+	GLuint tex;
+	glActiveTexture(GL_TEXTURE0);
+	//Read into computers memory
+	std::vector<unsigned char> image; //Allocate memory
+	unsigned width, height; //Variables for image size
+	//Read the image
+	unsigned error = lodepng::decode(image, width, height, filename);
+	//Import to graphics card memory
+	glGenTextures(1, &tex); //Initialize one handle
+	glBindTexture(GL_TEXTURE_2D, tex); //Activate handle
+	//Copy image to graphics cards memory represented by the active handle
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char*)image.data());
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	return tex;
+}
+
 //Error processing callback procedure
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
@@ -68,6 +89,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetWindowSizeCallback(window,windowResizeCallback);
 	glfwSetKeyCallback(window,keyCallback);
 	sp=new ShaderProgram("v_simplest.glsl",NULL,"f_simplest.glsl");
+	tex = readTexture("bricks.png");
 
 }
 
@@ -75,6 +97,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 void freeOpenGLProgram(GLFWwindow* window) {
 	//************Place any code here that needs to be executed once, after the main loop ends************
 	delete sp;
+	glDeleteTextures(1, &tex);
 }
 
 //Drawing procedure
@@ -103,7 +126,15 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
     glEnableVertexAttribArray(sp->a("vertex")); //Enable sending data to the attribute vertex
     glVertexAttribPointer(sp->a("vertex"),4,GL_FLOAT,false,0,myCubeVertices); //Specify source of the data for the attribute vertex
 
+	glEnableVertexAttribArray(sp->a("texCoord0"));
+	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, myCubeTexCoords);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glUniform1i(sp->u("textureMap0"), 0);
+
     glDrawArrays(GL_TRIANGLES,0,myCubeVertexCount); //Draw the object
+
+	glDisableVertexAttribArray(sp->a("texCoord0"));
 
     glDisableVertexAttribArray(sp->a("vertex")); //Disable sending data to the attribute vertex
 
