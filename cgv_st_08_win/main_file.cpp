@@ -87,7 +87,7 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y) {
         glm::vec3(0.0f,0.0f,-5.0f),
         glm::vec3(0.0f,0.0f,0.0f),
         glm::vec3(0.0f,1.0f,0.0f)); //compute view matrix
-    glm::mat4 P=glm::perspective(50.0f*PI/180.0f, 1.0f, 1.0f, 50.0f); //compute projection matrix
+    glm::mat4 P=glm::perspective(50.0f*PI/180.0f, aspectRatio, 1.0f, 50.0f); //compute projection matrix
 
     sp->use();//activate shading program
     //Send parameters to graphics card
